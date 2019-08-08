@@ -1,7 +1,8 @@
 ---
 # This file includes all the tasks needed to enable thumbnails in Thunar (the file explorer/manager) for images and videos.
 - name: Install required packages.
-  pacman:
+  aur:
+    use: yay
     name: [
     'tumbler',
     'ffmpegthumbnailer',

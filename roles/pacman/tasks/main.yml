@@ -66,8 +66,16 @@
       command: 
         rustup default stable
 
-- name: AUR
+- name: Remove deprecated aur packages
   become: yes
+  tags:
+    -aur
+  pacman:
+    name: "{{ query('lines', 'cat /home/{{local_user}}/code/dot-ansible/roles/pacman/files/aur-pkgs-remove') }}"
+    state: absent
+
+- name: AUR
+  become: no
   tags:
     - aur
   block:
@@ -79,22 +87,18 @@
       command: "gpg --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E"
     - name: Update AUR packages
       aur:
-        use: trizen
+        use: yay
         upgrade: yes
 
-    - name: Remove deprecated aur packages
-      pacman:
-        name: "{{ query('lines', 'cat /home/{{local_user}}/code/dot-ansible/roles/pacman/files/aur-pkgs-remove') }}"
-        state: absent
 
-    - name: Install packages
+    - name: Install AUR core packages
       aur:
-        use: trizen
+        use: yay
         name: "{{item}}"
       with_lines: "cat /home/{{local_user}}/code/dot-ansible/roles/pacman/files/aur-pkgs-core"
-    - name: Install optional packages
+    - name: Install optional AUR packages
       aur:
-        use: trizen
+        use: yay
         name: "{{item}}"
       with_lines: "cat /home/{{local_user}}/code/dot-ansible/roles/pacman/files/aur-pkgs"
       when: optional_aur_packages == true

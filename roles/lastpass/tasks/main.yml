@@ -1,8 +1,8 @@
 ---
 - name: Install dependencies
-  pacman:
+  aur:
+    use: yay
     name: lastpass-cli
-    state: present
 
 - name: Install rofi-lpass
   git:
